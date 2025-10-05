@@ -1,4 +1,4 @@
-# Sales Dashboard (Next.js 15 · TypeScript · Tailwind · Recharts)
+# Sales Dashboard (Next.js 15 · TypeScript · TailwindCSS · Recharts)
 
 A small dashboard that visualizes **yearly sales** of retail data (2022–2024) with an **atomic design** component structure.
 
@@ -7,7 +7,6 @@ A small dashboard that visualizes **yearly sales** of retail data (2022–2024) 
 - **Custom Filter Input** - An input field to let users set their own sales threshold
 - **API Integration** - Fetches real data from the API using JSON server and Axios
 - **Multiple Chart Types** - Added buttons to switch between bar, line, or pie charts using Recharts components
-- **Dashboard Integration** - Chart components are integrated inside the Dashboard page
 
 ## Tech Stack
 
