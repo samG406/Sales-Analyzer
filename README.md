@@ -38,7 +38,7 @@ npm run dev
 
 ## Live Demo
 
-Visit the live site: [https://your-dashboard-url.com](https://your-dashboard-url.com)
+Visit the live site: [https://sales-analyzer-silk.vercel.app/](https://sales-analyzer-silk.vercel.app/)
 
 ## Project Structure
 
