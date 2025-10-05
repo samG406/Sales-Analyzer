@@ -37,6 +37,10 @@ npm run dev
 
 4. Open [http://localhost:3000](http://localhost:3000) in your browser
 
+## Live Demo
+
+Visit the live site: [https://your-dashboard-url.com](https://your-dashboard-url.com)
+
 ## Project Structure
 
 ```
