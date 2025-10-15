@@ -10,7 +10,7 @@ import {
   XAxis,
   YAxis,
 } from 'recharts';
-import { fetchFilteredData } from '../../lib/api';
+import { fetchFilteredData } from '../../lib/sales';
 import type { FilterState, BarChartData } from '../../types/index';
 
 // Format number helper function
