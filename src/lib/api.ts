@@ -7,7 +7,7 @@ import type {
   AgeDistributionData,
 } from '../types/index';
 
-const BASE_URL = "https://json-server-ms3r.onrender.com";
+const BASE_URL = process.env.NEXT_PUBLIC_API_URL || "https://json-server-ms3r.onrender.com";
 
 // Fetch all sales data
 export const fetchAllSalesData = async (): Promise<SalesData[]> => {
