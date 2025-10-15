@@ -10,7 +10,7 @@ import {
   XAxis,
   YAxis,
 } from 'recharts';
-import { fetchFilteredData } from '../../lib/sales';
+import { fetchBarChartData } from '../../lib/api';
 import type { FilterState, BarChartData } from '../../types/index';
 
 // Format number helper function
@@ -31,29 +31,7 @@ export function BarChartComponent({ filters }: BarChartComponentProps) {
     const loadData = async () => {
       try {
         setLoading(true);
-  
-        // 1) Get rows that match current filters (no category filter needed)
-        const raw = await fetchFilteredData({
-          minAmount: filters?.minAmount ?? '',
-          maxAmount: filters?.maxAmount ?? '',
-          startDate: filters?.startDate ?? '',
-          endDate: filters?.endDate ?? '',
-          category: '' // keep empty
-        });
-  
-        // 2) Group by Product Category and sum totals and quantity
-        const grouped = raw.reduce<Record<string, BarChartData>>((acc, item) => {
-          const category = item['Product Category'];
-          if (!acc[category]) {
-            acc[category] = { category, totalAmount: 0, quantity: 0 };
-          }
-          acc[category].totalAmount += item['Total Amount'];
-          acc[category].quantity += item.Quantity;
-          return acc;
-        }, {});
-  
-        // 3) Convert to array for Recharts
-        const chartData = Object.values(grouped);
+        const chartData = await fetchBarChartData(filters);
         setData(chartData);
       } catch (err) {
         setError(err instanceof Error ? err.message : 'An error occurred');
@@ -61,7 +39,7 @@ export function BarChartComponent({ filters }: BarChartComponentProps) {
         setLoading(false);
       }
     };
-  
+
     loadData();
   }, [filters]);
 
@@ -89,7 +67,7 @@ export function BarChartComponent({ filters }: BarChartComponentProps) {
           />
           <Tooltip
             cursor={{ fill: "#f0f0f0" }}
-            formatter={(value: number) => [formatNumber(value), 'New Customers']}
+            formatter={(value: number) => [formatNumber(value), 'Total Amount']}
             labelFormatter={(label) => `${label}`}
             contentStyle={{
               backgroundColor: 'white',
@@ -100,7 +78,7 @@ export function BarChartComponent({ filters }: BarChartComponentProps) {
           />
           <Bar
             dataKey="totalAmount"
-            name="New Customers"
+            name="Total Amount"
             fill="#000000"
           />
         </BarChart>

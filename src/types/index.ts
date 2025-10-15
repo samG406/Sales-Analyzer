@@ -17,7 +17,6 @@ export interface FilterState {
   maxAmount: string | number;
   startDate: string;
   endDate: string;
-  category: string;
 }
 
 // Chart Data Types

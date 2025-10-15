@@ -5,7 +5,9 @@ import type {
   BarChartData, 
   PieChartData, 
   AgeDistributionData,
+  FilterState,
 } from '../types/index';
+
 
 const BASE_URL = process.env.NEXT_PUBLIC_API_URL || "https://json-server-ms3r.onrender.com";
 
@@ -46,13 +48,27 @@ export const fetchLineChartData = async (): Promise<LineChartData[]> => {
 };
 
 // Bar Chart API - Sales by Product Category
-export const fetchBarChartData = async (): Promise<BarChartData[]> => {
+export const fetchBarChartData = async (filters?: FilterState): Promise<BarChartData[]> => {
     try {
         const response = await axios.get<SalesData[]>(`${BASE_URL}/salesData`);
         const data = response.data;
+        let filtered = data;
+
+        if (filters?.minAmount) {
+            filtered = filtered.filter((item: SalesData) => item["Total Amount"] >= Number(filters.minAmount));
+        }
+        if (filters?.maxAmount) {
+            filtered = filtered.filter((item: SalesData) => item["Total Amount"] <= Number(filters.maxAmount));
+        }
+        if (filters?.startDate) {
+            filtered = filtered.filter((item: SalesData) => new Date(item.Date) >= new Date(filters.startDate));
+        }
+        if (filters?.endDate) {
+            filtered = filtered.filter((item: SalesData) => new Date(item.Date) <= new Date(filters.endDate));
+        }
         
         // Group data by product category
-        const categoryData = data.reduce((acc: Record<string, BarChartData>, item: SalesData) => {
+        const categoryData = filtered.reduce((acc: Record<string, BarChartData>, item: SalesData) => {
             const category = item["Product Category"];
             if (!acc[category]) {
                 acc[category] = { category, totalAmount: 0, quantity: 0 };
@@ -70,23 +86,39 @@ export const fetchBarChartData = async (): Promise<BarChartData[]> => {
 };
 
 // Pie Chart API - Sales by Gender
-export const fetchPieChartData = async (): Promise<PieChartData[]> => {
+export const fetchPieChartData = async (filters?: FilterState): Promise<PieChartData[]> => {
     try {
         const response = await axios.get<SalesData[]>(`${BASE_URL}/salesData`);
         const data = response.data;
+        let filtered = data;
+
+        if (filters?.minAmount) {
+            filtered = filtered.filter((item: SalesData) => item["Total Amount"] >= Number(filters.minAmount));              
+        }
+
+        if (filters?.maxAmount) {
+            filtered = filtered.filter((item: SalesData) => item["Total Amount"] <= Number (filters.maxAmount));
+        }
+        if (filters?.startDate) {
+            filtered = filtered.filter((item: SalesData) => new Date(item.Date) >= new Date(filters.startDate));
+        }
+        if (filters?.endDate) {
+            filtered = filtered.filter((item: SalesData) => new Date(item.Date) <= new Date(filters.endDate));
+        }
+
         
-        // Group data by gender
-        const genderData = data.reduce((acc: Record<string, PieChartData>, item: SalesData) => {
-            const gender = item.Gender;
-            if (!acc[gender]) {
-                acc[gender] = { name: gender, value: 0, count: 0 };
+        // Group data by product category
+    const productData = filtered.reduce((acc: Record<string, PieChartData>, item: SalesData) => {
+            const product = item["Product Category"];
+            if (!acc[product]) {
+                acc[product] = { name: product, value: 0, count: 0 };
             }
-            acc[gender].value += item["Total Amount"];
-            acc[gender].count += 1;
+            acc[product].value += item["Total Amount"];
+            acc[product].count += 1;
             return acc;
         }, {});
         
-        return Object.values(genderData);
+        return Object.values(productData);
     } catch (error) {
         console.error('Error fetching pie chart data:', error);
         throw error;

@@ -7,13 +7,18 @@ const FilterPanel: React.FC<FilterPanelProps> = ({ onFiltersChange }) => {
     maxAmount: '',
     startDate: '',
     endDate: '',
-    category: ''
   });
 
   const handleFilterChange = (key: keyof FilterState, value: string | number) => {
     const newFilters = { ...filters, [key]: value };
     setFilters(newFilters);
-    onFiltersChange(newFilters);
+
+    const validationErrors = validateFilters(newFilters);
+    setErrors(validationErrors);
+
+    if (validationErrors.length === 0) {
+      onFiltersChange(newFilters);
+    }
   };
 
   const clearFilters = (): void => {
@@ -21,12 +26,31 @@ const FilterPanel: React.FC<FilterPanelProps> = ({ onFiltersChange }) => {
       minAmount: '',
       maxAmount: '',
       startDate: '',
-      endDate: '',
-      category: ''
+      endDate: ''
     };
     setFilters(clearedFilters);
+    setErrors([]);
     onFiltersChange(clearedFilters);
   };
+  const [errors, setErrors] = useState<string[]>([]);
+
+  const validateFilters = (filters: FilterState): string[] => {
+    const errors: string[] = [];
+
+    if (filters.minAmount && filters.maxAmount) {
+      if (Number(filters.minAmount) > Number(filters.maxAmount)) {
+        errors.push('Min Amount must be less than Max Amount');
+      }
+    }
+
+    if (filters.startDate && filters.endDate) {
+      if (new Date(filters.startDate) > new Date(filters.endDate)) {
+        errors.push('Start Date must be before End Date');
+      }
+    }
+    return errors;
+  }
+
 
   return (
     <div className="w-full mx-auto mb-8 px-4">
@@ -37,7 +61,7 @@ const FilterPanel: React.FC<FilterPanelProps> = ({ onFiltersChange }) => {
           <label className="block mb-2 font-bold text-sm">
             Sales Amount Range:
           </label>
-          <div className="flex gap-2 w-full">
+          <div className="flex gap-2 w-full ">
             <input
               type="number"
               placeholder="Min Amount"
@@ -61,18 +85,22 @@ const FilterPanel: React.FC<FilterPanelProps> = ({ onFiltersChange }) => {
             Date Range:
           </label>
           <div className="flex gap-2 w-full">
-            <input
-              type="date"
-              value={filters.startDate}
-              onChange={(e) => handleFilterChange('startDate', e.target.value)}
-              className="p-2 rounded border border-gray-300 flex-1 min-w-0 text-sm"
-            />
-            <input
-              type="date"
-              value={filters.endDate}
-              onChange={(e) => handleFilterChange('endDate', e.target.value)}
-              className="p-2 rounded border border-gray-300 flex-1 min-w-0 text-sm"
-            />
+          <input
+            type="date"
+            value={filters.startDate}
+            onChange={(e) => handleFilterChange('startDate', e.target.value)}
+            className="p-2 rounded border border-gray-300 flex-1 min-w-0 text-sm"
+            min="2023-01-13"
+            max="2024-01-01"
+          />
+          <input
+            type="date"
+            value={filters.endDate}
+            onChange={(e) => handleFilterChange('endDate', e.target.value)}
+            className="p-2 rounded border border-gray-300 flex-1 min-w-0 text-sm"
+            min="2023-01-13"
+            max="2024-01-01"
+          />
           </div>
         </div>
 
@@ -86,6 +114,15 @@ const FilterPanel: React.FC<FilterPanelProps> = ({ onFiltersChange }) => {
           </button>
         </div>
       </div>
+      {errors.length > 0 && (
+      <div className="mt-4 p-3 bg-red-100 border border-red-400 text-red-700 rounded">
+        <ul className="list-disc list-inside">
+          {errors.map((error, index) => (
+            <li key={index}>{error}</li>
+          ))}
+        </ul>
+      </div>
+      )}
     </div>
   );
 };

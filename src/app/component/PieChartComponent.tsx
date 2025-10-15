@@ -19,13 +19,17 @@ const PieChartComponent: React.FC<PieChartComponentProps> = ({ filters }) => {
   const [data, setData] = useState<PieChartData[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [isEmpty, setIsEmpty] = useState(false);
 
   useEffect(() => {
     const loadData = async () => {
       try {
         setLoading(true);
-        const chartData = await fetchPieChartData();
+        const chartData = await fetchPieChartData(filters);
         setData(chartData);
+
+        // Check if no data matches filters
+        setIsEmpty(chartData.length === 0);
       } catch (err) {
         setError(err instanceof Error ? err.message : 'An error occurred');
       } finally {
@@ -34,14 +38,13 @@ const PieChartComponent: React.FC<PieChartComponentProps> = ({ filters }) => {
     };
 
     loadData();
-  }, [filters?.minAmount, filters?.maxAmount, filters?.startDate, filters?.endDate, filters?.category]);
+  }, [filters]);
 
   if (loading) return <div>Loading pie chart data...</div>;
   if (error) return <div>Error: {error}</div>;
-
+  if (isEmpty) return <div>No data matches the current filters.</div>;
   return (
     <div className="w-full max-w-3xl mx-auto bg-white p-4 rounded-lg">
-      <h2 className="text-lg font-bold text-black mb-4">Total Sales</h2>
       <ResponsiveContainer width="100%" height={240}>
         <PieChart>
           <Pie
@@ -57,7 +60,13 @@ const PieChartComponent: React.FC<PieChartComponentProps> = ({ filters }) => {
             {data.map((entry, index) => (
               <Cell
                 key={`cell-${index}`}
-                fill={entry.name === 'Female' ? '#000000' : '#9ca3af'}
+                fill={
+                  entry.name === 'Beauty' ? '#4a5565' :
+                  entry.name === 'Clothing' ? 'rgb(157, 164, 176)' :
+                  entry.name === 'Electronics' ? '#111827' : // bg-gray-900 color
+                  '#9ca3af' // default color
+                }
+              
               />
             ))}
           </Pie>

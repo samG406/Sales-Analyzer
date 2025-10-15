@@ -16,8 +16,7 @@ const Dashboard: React.FC = () => {
     minAmount: '',
     maxAmount: '',
     startDate: '',
-    endDate: '',
-    category: ''
+    endDate: ''
   });
 
   const handleFiltersChange = (newFilters: FilterState): void => {
@@ -84,7 +83,7 @@ const Dashboard: React.FC = () => {
         <div>
         <Card className="max-w-2xl mx-auto">
           <CardHeader>
-            <CardTitle>Sales by Gender</CardTitle>
+            <CardTitle>Sales by Product Category</CardTitle>
           </CardHeader>
           <CardContent className="p-4 pt-0">
             <PieChartComponent filters={filters} />
