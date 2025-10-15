@@ -42,8 +42,7 @@ export function LineChartComponent({ filters }: LineChartComponentProps) {
           minAmount: filters?.minAmount ?? '',
           maxAmount: filters?.maxAmount ?? '',
           startDate: filters?.startDate ?? '',
-          endDate: filters?.endDate ?? '',
-          category: '' // no category filter
+          endDate: filters?.endDate ?? ''
         });
   
         // 2) Group by date and sum totals
