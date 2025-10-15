@@ -5,10 +5,9 @@ import type {
   BarChartData, 
   PieChartData, 
   AgeDistributionData,
-  FilterState 
-} from '../src/types/index';
+} from '../types/index';
 
-const BASE_URL = "http://localhost:3001";
+const BASE_URL = "https://json-server-ms3r.onrender.com";
 
 // Fetch all sales data
 export const fetchAllSalesData = async (): Promise<SalesData[]> => {
@@ -129,36 +128,4 @@ export const fetchAgeDistributionData = async (): Promise<AgeDistributionData[]>
     }
 };
 
-// Filtered data function
-export const fetchFilteredData = async (filters: FilterState): Promise<SalesData[]> => {
-    try {
-        const response = await axios.get<SalesData[]>(`${BASE_URL}/salesData`);
-        let data = response.data;
-        
-        // Apply filters
-        if (filters.minAmount) {
-            data = data.filter(item => item["Total Amount"] >= Number(filters.minAmount));
-        }
-        
-        if (filters.maxAmount) {
-            data = data.filter(item => item["Total Amount"] <= Number(filters.maxAmount));
-        }
-        
-        if (filters.startDate) {
-            data = data.filter(item => new Date(item.Date) >= new Date(filters.startDate));
-        }
-        
-        if (filters.endDate) {
-            data = data.filter(item => new Date(item.Date) <= new Date(filters.endDate));
-        }
-        
-        if (filters.category) {
-            data = data.filter(item => item["Product Category"] === filters.category);
-        }
-        
-        return data;
-    } catch (error) {
-        console.error('Error fetching filtered data:', error);
-        throw error;
-    }
-};
+export { BASE_URL };

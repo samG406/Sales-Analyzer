@@ -10,7 +10,7 @@ import {
   XAxis,
   YAxis,
 } from 'recharts';
-import { fetchFilteredData } from '../../../api/app';
+import { fetchFilteredData } from '../../lib/sales';
 import type { FilterState, LineChartData } from '../../types/index';
 
 // Format currency helper function

@@ -7,7 +7,7 @@ import {
   Tooltip,
   Legend
 } from 'recharts';
-import { fetchPieChartData } from '../../../api/app';
+import { fetchPieChartData } from '../../lib/api';
 import type { FilterState, PieChartData } from '../../types/index';
 
 
