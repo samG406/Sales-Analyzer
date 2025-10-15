@@ -25,11 +25,6 @@ export const fetchFilteredData = async (filters: FilterState): Promise<SalesData
         if (filters.endDate) {
             data = data.filter(item => new Date(item.Date) <= new Date(filters.endDate));
         }
-        
-        if (filters.category) {
-            data = data.filter(item => item["Product Category"] === filters.category);
-        }
-        
         return data;
     } catch (error) {
         console.error('Error fetching filtered data:', error);
