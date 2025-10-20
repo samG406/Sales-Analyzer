@@ -45,7 +45,13 @@ const PieChartComponent: React.FC<PieChartComponentProps> = ({ filters }) => {
   if (isEmpty) return <div>No data matches the current filters.</div>;
   return (
     <div className="w-full max-w-3xl mx-auto bg-white p-4 rounded-lg">
-      <ResponsiveContainer width="100%" height={240}>
+      <h2 className="text-lg font-bold text-black mb-4">Sales by Product Category</h2>
+      <div 
+        role="img" 
+        aria-label={`Pie chart showing sales distribution by product category. ${data.map(item => `${item.name}: ${item.value} sales`).join(', ')}`}
+        aria-describedby="pieChartDescription"
+      >
+        <ResponsiveContainer width="100%" height={240}>
         <PieChart>
           <Pie
             data={data}
@@ -81,6 +87,11 @@ const PieChartComponent: React.FC<PieChartComponentProps> = ({ filters }) => {
           <Legend />
         </PieChart>
       </ResponsiveContainer>
+      </div>
+      <div id="pieChartDescription" className="sr-only">
+        This pie chart displays the distribution of sales across different product categories. 
+        Each segment represents a product category with its corresponding sales amount and percentage.
+      </div>
     </div>
   );
 };

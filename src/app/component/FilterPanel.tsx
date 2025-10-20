@@ -58,50 +58,70 @@ const FilterPanel: React.FC<FilterPanelProps> = ({ onFiltersChange }) => {
       <div className="flex flex-col sm:flex-row sm:items-end gap-4 sm:gap-6 flex-wrap px-4 py-4 border-2 border-gray-300 rounded-lg bg-[#f9f9f9]">
         {/* Sales Amount Range - Only Filter */}
         <div className="w-full sm:w-auto">
-          <label className="block mb-2 font-bold text-sm">
-            Sales Amount Range:
-          </label>
-          <div className="flex gap-2 w-full ">
-            <input
-              type="number"
-              placeholder="Min Amount"
-              value={filters.minAmount}
-              onChange={(e) => handleFilterChange('minAmount', e.target.value)}
-              className="p-2 rounded border border-gray-300 flex-1 min-w-0 text-sm"
-            />
-            <input
-              type="number"
-              placeholder="Max Amount"
-              value={filters.maxAmount}
-              onChange={(e) => handleFilterChange('maxAmount', e.target.value)}
-              className="p-2 rounded border border-gray-300 flex-1 min-w-0 text-sm"
-            />
-          </div>
+          <fieldset>
+            <legend className="block mb-2 font-bold text-sm">
+              Sales Amount Range:
+            </legend>
+            <div className="flex gap-2 w-full">
+              <label htmlFor="minAmount" className="sr-only">Minimum Amount</label>
+              <input
+                id="minAmount"
+                type="number"
+                placeholder="Min Amount"
+                value={filters.minAmount}
+                onChange={(e) => handleFilterChange('minAmount', e.target.value)}
+                className="p-2 rounded border border-gray-300 flex-1 min-w-0 text-sm"
+                aria-label="Minimum sales amount"
+                aria-describedby={errors.length > 0 ? "errorMessages" : undefined}
+              />
+              <label htmlFor="maxAmount" className="sr-only">Maximum Amount</label>
+              <input
+                id="maxAmount"
+                type="number"
+                placeholder="Max Amount"
+                value={filters.maxAmount}
+                onChange={(e) => handleFilterChange('maxAmount', e.target.value)}
+                className="p-2 rounded border border-gray-300 flex-1 min-w-0 text-sm"
+                aria-label="Maximum sales amount"
+                aria-describedby={errors.length > 0 ? "errorMessages" : undefined}
+              />
+            </div>
+          </fieldset>
         </div>
 
         {/* Date Range */}
         <div className="w-full sm:w-auto">
-          <label className="block mb-2 font-bold text-sm">
-            Date Range:
-          </label>
-          <div className="flex gap-2 w-full">
-          <input
-            type="date"
-            value={filters.startDate}
-            onChange={(e) => handleFilterChange('startDate', e.target.value)}
-            className="p-2 rounded border border-gray-300 flex-1 min-w-0 text-sm"
-            min="2023-01-13"
-            max="2024-01-01"
-          />
-          <input
-            type="date"
-            value={filters.endDate}
-            onChange={(e) => handleFilterChange('endDate', e.target.value)}
-            className="p-2 rounded border border-gray-300 flex-1 min-w-0 text-sm"
-            min="2023-01-13"
-            max="2024-01-01"
-          />
-          </div>
+          <fieldset>
+            <legend className="block mb-2 font-bold text-sm">
+              Date Range:
+            </legend>
+            <div className="flex gap-2 w-full">
+              <label htmlFor="startDate" className="sr-only">Start Date</label>
+              <input
+                id="startDate"
+                type="date"
+                value={filters.startDate}
+                onChange={(e) => handleFilterChange('startDate', e.target.value)}
+                className="p-2 rounded border border-gray-300 flex-1 min-w-0 text-sm"
+                min="2023-01-13"
+                max="2024-01-01"
+                aria-label="Start date for sales data filter"
+                aria-describedby={errors.length > 0 ? "errorMessages" : undefined}
+              />
+              <label htmlFor="endDate" className="sr-only">End Date</label>
+              <input
+                id="endDate"
+                type="date"
+                value={filters.endDate}
+                onChange={(e) => handleFilterChange('endDate', e.target.value)}
+                className="p-2 rounded border border-gray-300 flex-1 min-w-0 text-sm"
+                min="2023-01-13"
+                max="2024-01-01"
+                aria-label="End date for sales data filter"
+                aria-describedby={errors.length > 0 ? "errorMessages" : undefined}
+              />
+            </div>
+          </fieldset>
         </div>
 
         {/* Clear Filters Button */}
@@ -109,13 +129,20 @@ const FilterPanel: React.FC<FilterPanelProps> = ({ onFiltersChange }) => {
           <button
             onClick={clearFilters}
             className="px-5 py-2 bg-gray-600 text-white border-none rounded cursor-pointer text-sm font-bold hover:bg-gray-900 transition-colors"
+            aria-label="Clear all filters and reset form"
           >
             Clear 
           </button>
         </div>
       </div>
       {errors.length > 0 && (
-      <div className="mt-4 p-3 bg-red-100 border border-red-400 text-red-700 rounded">
+      <div 
+        id="errorMessages"
+        className="mt-4 p-3 bg-red-100 border border-red-400 text-red-700 rounded"
+        role="alert"
+        aria-live="polite"
+      >
+        <h4 className="font-bold mb-2">Please fix the following errors:</h4>
         <ul className="list-disc list-inside">
           {errors.map((error, index) => (
             <li key={index}>{error}</li>
