@@ -4,8 +4,8 @@ A small dashboard that visualizes **yearly sales** of retail data (2022–2024) 
 
 ## Features
 
-- **Custom Filter Input** - An input field to let users set their own sales threshold
-- **API Integration** - Fetches real data from the API using JSON server and Axios
+- **Custom Filter Input** - An input field to let users set their own sales threshold with date range restrictions (dates outside sales period are grayed-out to prevent selection) and comprehensive edge case handling with validation warnings for improper data input
+- **API Integration** - Fetches real data from the API using Axios
 - **Multiple Chart Types** - Added buttons to switch between bar, line, or pie charts using Recharts components
 
 ## Tech Stack
@@ -14,7 +14,6 @@ A small dashboard that visualizes **yearly sales** of retail data (2022–2024) 
 - **TypeScript** - Type safety and better development experience
 - **Tailwind CSS** - Utility-first CSS framework for styling
 - **Recharts** - Chart library for React
-- **JSON Server** - Mock API server for development
 - **Axios** - HTTP client for API requests
 
 ## Getting Started
@@ -24,17 +23,12 @@ A small dashboard that visualizes **yearly sales** of retail data (2022–2024) 
 npm install
 ```
 
-2. Start the JSON server (in one terminal):
-```bash
-npm run json
-```
-
-3. Start the development server (in another terminal):
+2. Start the development server:
 ```bash
 npm run dev
 ```
 
-4. Open [http://localhost:3000](http://localhost:3000) in your browser
+3. Open [http://localhost:3000](http://localhost:3000) in your browser
 
 ## Live Demo
 
@@ -60,6 +54,10 @@ src/
     └── data.json                 # sales data
 ```
 
+## Screenshot of Application
+
+![Sales Dashboard](./public/assets/image.png)
+
 ## Usage
 
 1. **Set Sales Threshold** - Use the filter panel to set minimum and maximum sales amounts
@@ -75,4 +73,4 @@ The dashboard displays sales data from 2022-2023 including:
 - Product categories
 - Sales amounts and quantities
 
-All data is fetched dynamically from the JSON server API and filtered based on user input.
+All data is fetched dynamically from the API and filtered based on user input.
