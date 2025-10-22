@@ -47,28 +47,22 @@ export const fetchLineChartData = async (): Promise<LineChartData[]> => {
     }
 };
 
-// Bar Chart API - Sales by Product Category
+// Bar Chart API - Sales by Product Category (Server-side filtering)
 export const fetchBarChartData = async (filters?: FilterState): Promise<BarChartData[]> => {
     try {
-        const response = await axios.get<SalesData[]>(`${BASE_URL}/salesData`);
-        const data = response.data;
-        let filtered = data;
-
-        if (filters?.minAmount) {
-            filtered = filtered.filter((item: SalesData) => item["Total Amount"] >= Number(filters.minAmount));
-        }
-        if (filters?.maxAmount) {
-            filtered = filtered.filter((item: SalesData) => item["Total Amount"] <= Number(filters.maxAmount));
-        }
-        if (filters?.startDate) {
-            filtered = filtered.filter((item: SalesData) => new Date(item.Date) >= new Date(filters.startDate));
-        }
-        if (filters?.endDate) {
-            filtered = filtered.filter((item: SalesData) => new Date(item.Date) <= new Date(filters.endDate));
-        }
+        // Build query string for server-side filtering
+        const params = new URLSearchParams();
+        if (filters?.minAmount) params.append('minAmount', filters.minAmount.toString());
+        if (filters?.maxAmount) params.append('maxAmount', filters.maxAmount.toString());
+        if (filters?.startDate) params.append('startDate', filters.startDate);
+        if (filters?.endDate) params.append('endDate', filters.endDate);
         
-        // Group data by product category
-        const categoryData = filtered.reduce((acc: Record<string, BarChartData>, item: SalesData) => {
+        // Use server-side filtering endpoint
+        const response = await axios.get<SalesData[]>(`${BASE_URL}/api/salesData/filtered?${params}`);
+        const filteredData = response.data; // Only filtered records from server
+        
+        // Group data by product category (now processing smaller dataset)
+        const categoryData = filteredData.reduce((acc: Record<string, BarChartData>, item: SalesData) => {
             const category = item["Product Category"];
             if (!acc[category]) {
                 acc[category] = { category, totalAmount: 0, quantity: 0 };
@@ -85,30 +79,22 @@ export const fetchBarChartData = async (filters?: FilterState): Promise<BarChart
     }
 };
 
-// Pie Chart API - Sales by Gender
+// Pie Chart API - Sales by Product Category (Server-side filtering)
 export const fetchPieChartData = async (filters?: FilterState): Promise<PieChartData[]> => {
     try {
-        const response = await axios.get<SalesData[]>(`${BASE_URL}/salesData`);
-        const data = response.data;
-        let filtered = data;
-
-        if (filters?.minAmount) {
-            filtered = filtered.filter((item: SalesData) => item["Total Amount"] >= Number(filters.minAmount));              
-        }
-
-        if (filters?.maxAmount) {
-            filtered = filtered.filter((item: SalesData) => item["Total Amount"] <= Number (filters.maxAmount));
-        }
-        if (filters?.startDate) {
-            filtered = filtered.filter((item: SalesData) => new Date(item.Date) >= new Date(filters.startDate));
-        }
-        if (filters?.endDate) {
-            filtered = filtered.filter((item: SalesData) => new Date(item.Date) <= new Date(filters.endDate));
-        }
-
+        // Build query string for server-side filtering
+        const params = new URLSearchParams();
+        if (filters?.minAmount) params.append('minAmount', filters.minAmount.toString());
+        if (filters?.maxAmount) params.append('maxAmount', filters.maxAmount.toString());
+        if (filters?.startDate) params.append('startDate', filters.startDate);
+        if (filters?.endDate) params.append('endDate', filters.endDate);
         
-        // Group data by product category
-    const productData = filtered.reduce((acc: Record<string, PieChartData>, item: SalesData) => {
+        // Use server-side filtering endpoint
+        const response = await axios.get<SalesData[]>(`${BASE_URL}/api/salesData/filtered?${params}`);
+        const filteredData = response.data; // Only filtered records from server
+        
+        // Group data by product category (now processing smaller dataset)
+        const productData = filteredData.reduce((acc: Record<string, PieChartData>, item: SalesData) => {
             const product = item["Product Category"];
             if (!acc[product]) {
                 acc[product] = { name: product, value: 0, count: 0 };

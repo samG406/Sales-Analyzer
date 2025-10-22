@@ -1,6 +1,6 @@
 "use client"
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, memo } from 'react';
 import {
   Bar,
   BarChart,
@@ -22,7 +22,7 @@ interface BarChartComponentProps {
   filters?: FilterState;
 }
 
-export function BarChartComponent({ filters }: BarChartComponentProps) {
+const BarChartComponent = memo(function BarChartComponent({ filters }: BarChartComponentProps) {
   const [data, setData] = useState<BarChartData[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -85,6 +85,6 @@ export function BarChartComponent({ filters }: BarChartComponentProps) {
       </ResponsiveContainer>
     </div>
   );
-}
+});
 
 export default BarChartComponent;

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, memo } from 'react';
 import {
   PieChart,
   Pie,
@@ -15,7 +15,7 @@ interface PieChartComponentProps {
   filters?: FilterState;
 }
 
-const PieChartComponent: React.FC<PieChartComponentProps> = ({ filters }) => {
+const PieChartComponent: React.FC<PieChartComponentProps> = memo(function PieChartComponent({ filters }) {
   const [data, setData] = useState<PieChartData[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -94,7 +94,7 @@ const PieChartComponent: React.FC<PieChartComponentProps> = ({ filters }) => {
       </div>
     </div>
   );
-};
+});
 
 export default PieChartComponent;
 

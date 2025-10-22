@@ -1,13 +1,30 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import type { FilterPanelProps, FilterState } from '../../types/index';
+import { useDebounce} from '../../hooks/useDebounce';
 
 const FilterPanel: React.FC<FilterPanelProps> = ({ onFiltersChange }) => {
+  console.log('FilterPanel rendered!', new Date().toISOString());
   const [filters, setFilters] = useState<FilterState>({
     minAmount: '',
     maxAmount: '',
     startDate: '',
     endDate: '',
   });
+
+
+  const debouncedFilters = useDebounce<FilterState>(filters, 300);
+
+  useEffect(() => {
+    console.log('Debounced filters changed:', debouncedFilters);
+    const validationErrors = validateFilters(debouncedFilters);
+    setErrors(validationErrors);
+
+    if( validationErrors.length === 0) {
+      onFiltersChange(debouncedFilters);
+    } 
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [debouncedFilters]);
+
 
   const handleFilterChange = (key: keyof FilterState, value: string | number) => {
     const newFilters = { ...filters, [key]: value };

@@ -3,29 +3,19 @@ import { FilterState, SalesData } from '../types/index';
 import { BASE_URL } from './api';
 
 
-// Filtered data function
+// Filtered data function (Server-side filtering)
 export const fetchFilteredData = async (filters: FilterState): Promise<SalesData[]> => {
     try {
-        const response = await axios.get<SalesData[]>(`${BASE_URL}/salesData`);
-        let data = response.data;
+        // Build query string for server-side filtering
+        const params = new URLSearchParams();
+        if (filters.minAmount) params.append('minAmount', filters.minAmount.toString());
+        if (filters.maxAmount) params.append('maxAmount', filters.maxAmount.toString());
+        if (filters.startDate) params.append('startDate', filters.startDate);
+        if (filters.endDate) params.append('endDate', filters.endDate);
         
-        // Apply filters
-        if (filters.minAmount) {
-            data = data.filter(item => item["Total Amount"] >= Number(filters.minAmount));
-        }
-        
-        if (filters.maxAmount) {
-            data = data.filter(item => item["Total Amount"] <= Number(filters.maxAmount));
-        }
-        
-        if (filters.startDate) {
-            data = data.filter(item => new Date(item.Date) >= new Date(filters.startDate));
-        }
-        
-        if (filters.endDate) {
-            data = data.filter(item => new Date(item.Date) <= new Date(filters.endDate));
-        }
-        return data;
+        // Use server-side filtering endpoint
+        const response = await axios.get<SalesData[]>(`${BASE_URL}/api/salesData/filtered?${params}`);
+        return response.data; // Only filtered records from server
     } catch (error) {
         console.error('Error fetching filtered data:', error);
         throw error;

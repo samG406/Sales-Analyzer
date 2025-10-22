@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useCallback } from "react";
 import FilterPanel from "./FilterPanel";
 import type { FilterState } from "../../types/index";
 import {
@@ -19,9 +19,9 @@ const Dashboard: React.FC = () => {
     endDate: ''
   });
 
-  const handleFiltersChange = (newFilters: FilterState): void => {
+  const handleFiltersChange = useCallback((newFilters: FilterState): void => {
     setFilters(newFilters);
-  };
+  }, []);
 
   const [isActiveChart, setActiveChart] = useState('line');
   const showLineChart = () => setActiveChart('line');
@@ -42,7 +42,7 @@ const Dashboard: React.FC = () => {
       <div className="flex flex-wrap justify-center sm:justify-end items-center gap-3 sm:gap-4 mb-6" role="tablist" aria-label="Chart type selection">
         <button 
           onClick={showLineChart} 
-          className="rounded-2xl font-semibold w-25 border-2 bg-gray-300 border-gray-600 hover:bg-gray-800 hover:text-white p-2"
+          className="rounded-2xl font-semibold w-24 border-2 bg-gray-300 border-gray-600 hover:bg-gray-800 hover:text-white p-2"
           aria-label="Switch to line chart view"
           aria-pressed={isActiveChart === 'line'}
         >
@@ -50,7 +50,7 @@ const Dashboard: React.FC = () => {
         </button>
         <button 
           onClick={showBarChart} 
-          className="rounded-2xl font-semibold w-25 border-2 bg-gray-300 border-gray-600  hover:bg-gray-800 hover:text-white p-2"
+          className="rounded-2xl font-semibold w-24 border-2 bg-gray-300 border-gray-600 hover:bg-gray-800 hover:text-white p-2"
           aria-label="Switch to bar chart view"
           aria-pressed={isActiveChart === 'bar'}
         >
@@ -58,7 +58,7 @@ const Dashboard: React.FC = () => {
         </button>
         <button 
           onClick={showPieChart} 
-          className="rounded-2xl font-semibold w-25 border-2 bg-gray-300 border-gray-600 hover:bg-gray-800 hover:text-white p-2"
+          className="rounded-2xl font-semibold w-24 border-2 bg-gray-300 border-gray-600 hover:bg-gray-800 hover:text-white p-2"
           aria-label="Switch to pie chart view"
           aria-pressed={isActiveChart === 'pie'}
         >

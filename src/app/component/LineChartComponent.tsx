@@ -1,6 +1,6 @@
 "use client"
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo, memo } from 'react';
 import {
   CartesianGrid,
   Line,
@@ -11,7 +11,7 @@ import {
   YAxis,
 } from 'recharts';
 import { fetchFilteredData } from '../../lib/sales';
-import type { FilterState, LineChartData } from '../../types/index';
+import type { FilterState, SalesData } from '../../types/index';
 
 // Format currency helper function
 const formatCurrency = (value: number): string => {
@@ -27,17 +27,36 @@ interface LineChartComponentProps {
   filters?: FilterState;
 }
 
-export function LineChartComponent({ filters }: LineChartComponentProps) {
-  const [data, setData] = useState<LineChartData[]>([]);
+const LineChartComponent = memo(function LineChartComponent({ filters }: LineChartComponentProps) {
+  const [rawData, setRawData] = useState<SalesData[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+
+  // Memoize the expensive data processing
+  const data = useMemo(() => {
+    if (!rawData.length) return [];
+    
+    // Group by date and sum totals
+    const grouped = rawData.reduce<Record<string, { date: string; totalAmount: number; transactionCount: number }>>((acc, item) => {
+      const date = item.Date;
+      if (!acc[date]) acc[date] = { date, totalAmount: 0, transactionCount: 0 };
+      acc[date].totalAmount += item["Total Amount"];
+      acc[date].transactionCount += 1;
+      return acc;
+    }, {});
+
+    // Sort by date so the x-axis shows the filtered range in order
+    return Object.values(grouped).sort(
+      (a, b) => new Date(a.date).getTime() - new Date(b.date).getTime()
+    );
+  }, [rawData]);
 
   useEffect(() => {
     const loadData = async () => {
       try {
         setLoading(true);
   
-        // 1) Fetch rows that match current filters (category intentionally empty)
+        // Fetch rows that match current filters
         const raw = await fetchFilteredData({
           minAmount: filters?.minAmount ?? '',
           maxAmount: filters?.maxAmount ?? '',
@@ -45,21 +64,7 @@ export function LineChartComponent({ filters }: LineChartComponentProps) {
           endDate: filters?.endDate ?? ''
         });
   
-        // 2) Group by date and sum totals
-        const grouped = raw.reduce<Record<string, { date: string; totalAmount: number; transactionCount: number }>>((acc, item) => {
-          const date = item.Date;
-          if (!acc[date]) acc[date] = { date, totalAmount: 0, transactionCount: 0 };
-          acc[date].totalAmount += item["Total Amount"];
-          acc[date].transactionCount += 1;
-          return acc;
-        }, {});
-  
-        // 3) Sort by date so the x-axis shows the filtered range in order
-        const chartData = Object.values(grouped).sort(
-          (a, b) => new Date(a.date).getTime() - new Date(b.date).getTime()
-        );
-  
-        setData(chartData);
+        setRawData(raw);
       } catch (err) {
         setError(err instanceof Error ? err.message : 'An error occurred');
       } finally {
@@ -114,6 +119,6 @@ export function LineChartComponent({ filters }: LineChartComponentProps) {
       </ResponsiveContainer>
     </div>
   );
-}
+});
 
 export default LineChartComponent;
