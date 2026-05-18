@@ -54,9 +54,6 @@ src/
     └── data.json                 # sales data
 ```
 
-## Screenshot of Application
-
-![Sales Dashboard](./public/assets/image.png)
 
 ## Usage
 
